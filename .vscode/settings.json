@@ -1,0 +1,13 @@
+{
+    "files.exclude": {
+        "docs/paper/*.aux": true,
+        "docs/paper/*.fdb_latexmk": true,
+        "docs/paper/*.fls": true,
+        "docs/paper/*.log": true,
+        "docs/paper/*.synctex.gz": true,
+        "docs/paper/*.bbl": true,
+        "docs/paper/*.bcf": true,
+        "docs/paper/*.blg": true,
+        "docs/paper/*.run.xml": true,
+    }
+}

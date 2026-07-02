@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "red_black_tree",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/src/RedBlackTrees/bin/Debug/net10.0/RedBlackTrees.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/RedBlackTrees",
+      "stopAtEntry": false,
+      "console": "integratedTerminal",
+      "logging": {
+        "moduleLoad": false
+      }
+    }
+  ]
+}
