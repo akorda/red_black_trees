@@ -1,0 +1,22 @@
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+docs/paper/*.aux
+docs/paper/*.log
+docs/paper/*.fdb_latexmk
+docs/paper/*.fls
+docs/paper/*.log
+docs/paper/*.synctex.gz
+docs/paper/*.bbl
+docs/paper/*.bcf
+docs/paper/*.blg
+docs/paper/*.run.xml
