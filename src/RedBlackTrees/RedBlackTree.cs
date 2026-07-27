@@ -390,4 +390,225 @@ public class RedBlackTree<K, V>
 
         return (node.Key, node.Value!);
     }
+
+    /// <summary>
+    /// path.Peek() contains the minimum node
+    /// </summary>
+    /// <param name="node"></param>
+    /// <param name="parent"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    private Path GetPathToMinimum(Node<K, V> node, Node<K, V> parent)
+    {
+        if (node == Nil) throw new InvalidOperationException();
+
+        var path = new Path();
+        path.Push(parent);
+
+        while (node.Left != Nil)
+        {
+            path.Push(node);
+            node = node.Left;
+        }
+
+        path.Push(node);
+
+        return path;
+    }
+
+    private void Transplant(
+        Node<K, V> oldNode,
+        Node<K, V> oldNodeParent,
+        Node<K, V> newNode,
+        Node<K, V> newNodeParent
+    )
+    {
+        // Detach new node from it's parent
+        if (newNode.IsLeftChildOf(newNodeParent)) newNodeParent.Left = Nil;
+        else if (newNode.IsRightChildOf(newNodeParent)) newNodeParent.Right = Nil;
+
+        // Attach new node to old node's parent or Root
+        if (IsNil(oldNodeParent)) Root = newNode;
+        else if (oldNode.IsLeftChildOf(oldNodeParent)) oldNodeParent.Left = newNode;
+        else oldNodeParent.Right = newNode;
+    }
+
+    public bool Delete(K key)
+    {
+        var x = Root;
+
+        var path = new Path();
+        path.Push(Nil);
+
+        while (x != Nil)
+        {
+            path.Push(x);
+
+            var compare = key.CompareTo(x.Key);
+
+            if (compare == 0)
+            {
+                break;
+            }
+
+            if (compare < 0) x = x.Left;
+            else x = x.Right;
+        }
+
+        return Delete(path);
+    }
+
+    private bool Delete(Path path)
+    {
+        var node = path.Peek();
+
+        if (node == Nil) return false;
+
+        var parent = path.PeekParent();
+
+        Node<K, V> child;
+        var minNode = node;
+        var nodeColor = minNode.Color;
+
+        if (node.Left == Nil)
+        {
+            child = node.Right;
+            Transplant(node, parent, node.Right, node);
+        }
+        else if (node.Right == Nil)
+        {
+            child = node.Left;
+            Transplant(node, parent, node.Left, node);
+        }
+        else
+        {
+            var minPath = GetPathToMinimum(node.Right, node);
+            minNode = minPath.Peek();
+            nodeColor = minNode.Color;
+            var minNodeParent = minPath.PeekParent();
+
+            // child = minNode.Right;
+            child = minNode;
+
+            if (minNode != node.Right)
+            {
+                Transplant(minNode, minNodeParent, minNode.Right, minNode);
+                minNode.Right = node.Right;
+                // nextNode.Right.Parent = nextNode;
+            }
+            else
+            {
+                // child.Parent = nextNode;
+            }
+
+            Transplant(node, parent, minNode, minNodeParent);
+            minNode.Left = node.Left;
+            // nextNode.Left.Parent = nextNode;
+            minNode.Color = node.Color;
+
+            // path.Pop();
+            // path.Push(minPath.Pop());
+            // for (var i = 1; i < minPath.Nodes.Count; i++)
+            // {
+            //     path.Push(minPath.Nodes[i]);
+            // }
+            // path.Push(child);
+        }
+
+        if (nodeColor == Color.Black)
+        {
+            path.Pop();
+            path.Push(child);
+            DeleteFixup(path);
+        }
+
+        Size--;
+
+        return true;
+    }
+
+    private void DeleteFixup(Path path)
+    {
+        var node = path.Peek();
+
+        while (node != Root && node.IsBlack)
+        {
+            var parent = path.PeekParent();
+
+            if (node.IsLeftChildOf(parent))
+            {
+                var sibling = parent.Right;
+                if (sibling == Nil)
+                    break;
+
+                if (sibling.IsRed)
+                {
+                    sibling.Color = Color.Black;
+                    parent.Color = Color.Red;
+                    // LeftRotate(parent);
+                    sibling = parent.Right;
+                }
+
+                if (!sibling.Left.IsRed && !sibling.Right.IsRed)
+                {
+                    sibling.Color = Color.Red;
+                    node = parent;
+                }
+                else
+                {
+                    if (!sibling.Right.IsRed)
+                    {
+                        sibling.Left.Color = Color.Black;
+                        sibling.Color = Color.Red;
+                        // RightRotate(sibling);
+                        sibling = parent.Right;
+                    }
+
+                    sibling.Color = parent.Color;
+                    parent.Color = Color.Black;
+                    sibling.Right.Color = Color.Black;
+                    // LeftRotate(parent);
+                    node = Root;
+                }
+            }
+            else
+            {
+                var sibling = parent.Left;
+                if (sibling == Nil)
+                    break;
+
+                if (sibling.IsRed)
+                {
+                    sibling.Color = Color.Black;
+                    parent.Color = Color.Red;
+                    // RightRotate(parent);
+                    sibling = parent.Left;
+                }
+
+                if (!sibling.Right.IsRed && !sibling.Left.IsRed)
+                {
+                    sibling.Color = Color.Red;
+                    node = parent;
+                }
+                else
+                {
+                    if (!sibling.Left.IsRed)
+                    {
+                        sibling.Right.Color = Color.Black;
+                        sibling.Color = Color.Red;
+                        // LeftRotate(sibling);
+                        sibling = parent.Left;
+                    }
+
+                    sibling.Color = parent.Color;
+                    parent.Color = Color.Black;
+                    sibling.Left.Color = Color.Black;
+                    // RightRotate(parent);
+                    node = Root;
+                }
+            }
+        }
+
+        node.Color = Color.Black;
+    }
 }

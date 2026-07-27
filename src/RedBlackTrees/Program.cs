@@ -24,10 +24,12 @@ public static class Program
             tree.Insert(key, value);
         }
 
-
-        // writer.Write(tree, Console.Out);
+        writer.Write(tree, Console.Out);
         // new LatexTreeWriter<int, string>().Write(tree, Console.Out);
         // new LatexSameLevelTreeWriter<int, string>().Write(tree, Console.Out);
+
+        tree.Delete(7);
+        writer.Write(tree, Console.Out);
 
         tree.Postorder(n => Console.WriteLine($"{n.Color}: {n.Key} -> {n.Value}"));
         var min = tree.GetMinimum();
