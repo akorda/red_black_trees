@@ -12,7 +12,7 @@ public enum Color : byte
 public class Node<K, V>
 {
     public K Key { get; set; }
-    public V Value { get; set; }
+    public V? Value { get; set; }
     public Color Color { get; set; }
     public Node<K, V> Left { get; set; }
     public Node<K, V> Right { get; set; }
@@ -363,5 +363,31 @@ public class RedBlackTree<K, V>
         PostorderInt(node.Left, visit);
         PostorderInt(node.Right, visit);
         visit(node);
+    }
+
+    public (K, V)? GetMinimum()
+        => GetMinimumInt(Root);
+
+    private (K, V)? GetMinimumInt(Node<K, V> node)
+    {
+        if (node == Nil) return null;
+
+        while (node.Left != Nil)
+            node = node.Left;
+
+        return (node.Key, node.Value!);
+    }
+
+    public (K, V)? GetMaximum()
+        => GetMaximumInt(Root);
+
+    private (K, V)? GetMaximumInt(Node<K, V> node)
+    {
+        if (node == Nil) return null;
+
+        while (node.Right != Nil)
+            node = node.Right;
+
+        return (node.Key, node.Value!);
     }
 }

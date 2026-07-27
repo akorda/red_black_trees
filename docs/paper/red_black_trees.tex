@@ -251,14 +251,11 @@ until a \emph{BLACK} link or the \emph{root} of the tree is reached.
 Consider now the case in which the uncle of an invalid node is \emph{BLACK}.
 Two cases arise, according to whether the new node is the \emph{left} or the \emph{right} child of its parent.
 
-It should also be noted that both cases \emph{prepare} the ``uncle'' node for a subsequent \emph{Propagation}
-by turning it into a \emph{RED} node.
-
 \subsubsection{Case 2.1: Right child}
 
 Suppose that keys have been inserted into a \emph{Red-Black} tree
 and that the node under consideration is node \encircle{7},
-which is the right child of its parent, node \encircle{1} Figure~\ref{fig:case_2_1_violation}.
+which is the right child of its parent, node \encircle{2} Figure~\ref{fig:case_2_1_violation}.
 The uncle of node \encircle{7} is node \encircle{14}, which is a \emph{BLACK} node.
 Both cases implement the \emph{Rebalance} mechanism of \emph{Red-Black} trees.
 
@@ -343,8 +340,9 @@ Accordingly, this violation is corrected as follows:
 \label{fig:case_2_1_fix}
 \end{figure}
 
-Upon completion of this operation, node \encircle{7} (that is, the newly inserted node) becomes the new root, and no new
-violation exists, since the root of the sub-tree under consideration is connected by a \emph{BLACK} link.
+Upon completion of this operation, node \encircle{7} becomes the new root, 
+and no new violation exists, 
+since the root of the sub-tree under consideration is connected by a \emph{BLACK} link.
 
 The resulting sub-tree is now balanced (Figure~\ref{fig:case_2_1_fix}).
 
@@ -528,14 +526,13 @@ node, a \emph{sentinel} node is used to represent a \emph{NIL} node:
 \begin{lstlisting}[language=java]
 public class RedBlackTree
 {
-    \\ ...
+    // ...
     const Node Nil = new Node { Color = Black };
 }
 \end{lstlisting}
 The implementation may assign any suitable values to the \texttt{Key}, \texttt{Value},
 \texttt{Left}, \texttt{Right} and \texttt{Parent} properties. Only the \texttt{Color} property is explicitly set to
-\emph{BLACK}. In addition, the \texttt{Key} property of the \emph{Nil} node is set to the key used when searching, or
-at the start of the insertion algorithm.
+\emph{BLACK}. In addition, the \texttt{Key} property of the \emph{Nil} node is set to the key used when searching.
 \par
 It should be noted that not only all leaves but also the \emph{root} node are set to point to the \texttt{Nil} node.
 This is consistent with the second rule of \emph{Red-Black} trees, which requires the \emph{root} node to be

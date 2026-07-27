@@ -30,5 +30,7 @@ public static class Program
         // new LatexSameLevelTreeWriter<int, string>().Write(tree, Console.Out);
 
         tree.Postorder(n => Console.WriteLine($"{n.Color}: {n.Key} -> {n.Value}"));
+        var min = tree.GetMinimum();
+        var max = tree.GetMaximum();
     }
 }
