@@ -316,4 +316,52 @@ public class RedBlackTree<K, V>
 
     public bool IsNil(Node<K, V> node)
         => node == Nil;
+
+    public void Preorder(Action<Node<K, V>> visit)
+    {
+        ArgumentNullException.ThrowIfNull(visit);
+
+        PreorderInt(Root, visit);
+    }
+
+    private void PreorderInt(Node<K, V> node, Action<Node<K, V>> visit)
+    {
+        if (node == Nil) return;
+
+        visit(node);
+        PreorderInt(node.Left, visit);
+        PreorderInt(node.Right, visit);
+    }
+
+    public void Inorder(Action<Node<K, V>> visit)
+    {
+        ArgumentNullException.ThrowIfNull(visit);
+
+        InorderInt(Root, visit);
+    }
+
+    private void InorderInt(Node<K, V> node, Action<Node<K, V>> visit)
+    {
+        if (node == Nil) return;
+
+        InorderInt(node.Left, visit);
+        visit(node);
+        InorderInt(node.Right, visit);
+    }
+
+    public void Postorder(Action<Node<K, V>> visit)
+    {
+        ArgumentNullException.ThrowIfNull(visit);
+
+        PostorderInt(Root, visit);
+    }
+
+    private void PostorderInt(Node<K, V> node, Action<Node<K, V>> visit)
+    {
+        if (node == Nil) return;
+
+        PostorderInt(node.Left, visit);
+        PostorderInt(node.Right, visit);
+        visit(node);
+    }
 }
