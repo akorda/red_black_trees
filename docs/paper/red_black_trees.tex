@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{listings}
+\usepackage{float}
 \usepackage{tikz}
 \usepackage[backend=biber,style=numeric]{biblatex}
 \addbibresource{references.bib}
@@ -106,7 +107,9 @@ The following rules apply to any \emph{Red-Black} tree:
    \item Every simple path from \emph{root} to a leaf has the same number of \emph{BLACK} nodes.
 \end{enumerate}
 
-\section{Fixing violations}
+\section{Insertion}
+
+\subsection{Fixing violations}
 
 When a new node is inserted into a \emph{Red-Black} tree, it is always connected to its parent by a \emph{RED} link.
 A \emph{BLACK} link is not used, since it would alter the height of the tree, which is undesirable:
@@ -139,7 +142,7 @@ The term ``uncle'' of a node denotes the sibling of the node's parent
 \footnote{Equivalently, the child of the grand-parent that is not the parent of the node.}.
 The color of the uncle determines how the violation is corrected.
 
-\subsection{Case 1: Red uncle --- Propagation mechanism}
+\subsubsection{Case 1: Red uncle --- Propagation mechanism}
 
 Suppose we are given a \emph{Red-Black} tree with nodes
 \encircle{11}, \encircle{2} and \encircle{14}, together with the parent of node \encircle{11}, denoted \encircle{p}
@@ -246,7 +249,7 @@ This correction realizes the \emph{Propagation} mechanism of \emph{Red-Black} tr
 it propagates the balance violation to the level above,
 until a \emph{BLACK} link or the \emph{root} of the tree is reached.
 
-\subsection{Case 2: Black uncle --- Rebalance mechanism}
+\subsubsection{Case 2: Black uncle --- Rebalance mechanism}
 
 Consider now the case in which the uncle of an invalid node is \emph{BLACK}.
 Two cases arise, according to whether the new node is the \emph{left} or the \emph{right} child of its parent.
@@ -430,6 +433,302 @@ Upon completion of this operation, all violations have been corrected, since a \
 nothing further remains to be done.
 
 Once again, the resulting sub-tree is now balanced (Figure~\ref{fig:case_2_2_fix}).
+
+\section{Deletion}
+
+\subsection{Case D.1. \emph{BLACK} sibling with a right \emph{RED} child}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle, minimum size=14, inner sep=0, font=\small,thick,draw}]
+    \node (p) [label=left:h] at (0.00, 0.00) {p};
+    \node (v) [label=left:h+2]at (-1.50, -1.50) {v};
+    \node (s) [label=left:h+1]at (2.00, -1.50) {s};
+    \node (s2) [label=left:h+1/h+2]at (1.00, -2.25) {s2};
+    \node (z) [label=right:h+1] at (3.50, -1.50) {z};
+    \node (z1) [label=left:h+2] at (2.75, -3.00) {z1};
+    \node (z2) [label=right:h+2] at (4.25, -3.00) {z2};
+\end{scope}
+\begin{scope}[>={Stealth[black,length=3mm]},
+              every node/.style={fill=white,circle},
+              red_edge/.style={draw=red,very thick},
+              brown_edge/.style={draw=brown,very thick},
+              black_edge/.style={draw=black,very thick},
+              double_black_edge/.style={draw=black,thick}]
+    \path [->] (p) edge [double distance=2pt, double_black_edge] (v);
+    \path [->] (p) edge [black_edge] (s);
+    \path [->] (s) edge [red_edge] (z);
+    \path [->] (s) edge [brown_edge] (s2);
+    \path [->] (z) edge [black_edge] (z1);
+    \path [->] (z) edge [black_edge] (z2);
+\end{scope}
+\end{tikzpicture}
+\caption{\emph{Case D.1}: \emph{BLACK} sibling with a right \emph{RED} child}
+\label{fig:deletion_case_1}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle, minimum size=14, inner sep=0, font=\small,thick,draw}]
+    \node (s) [label=left:h] at (0.00, 0.00) {s};
+    \node (p) [label=left:h+1]at (-2.00, -1.50) {p};
+    \node (z) [label=right:h+1] at (2.00, -1.50) {z};
+    \node (v) [label=left:h+2] at (-3.00, -3.00) {v};
+    \node (s2) [label=right:h+1/h+2] at (-1.00, -2.25) {s2};
+    \node (z1) [label=left:h+2] at (0.75, -3.00) {z1};
+    \node (z2) [label=right:h+2] at (3.25, -3.00) {z2};
+\end{scope}
+\begin{scope}[>={Stealth[black,length=3mm]},
+              every node/.style={fill=white,circle},
+              red_edge/.style={draw=red,very thick},
+              brown_edge/.style={draw=brown,very thick},
+              black_edge/.style={draw=black,very thick}]
+    \path [->] (s) edge [black_edge] (p);
+    \path [->] (p) edge [black_edge] (v);
+    \path [->] (z) edge [black_edge] (z1);
+    \path [->] (s) edge [black_edge] (z);
+    \path [->] (p) edge [brown_edge] (s2);
+    \path [->] (z) edge [black_edge] (z2);
+\end{scope}
+\end{tikzpicture}
+\caption{Fix of \emph{Case D.1}}
+\label{fig:deletion_fix_of_case_1}
+\end{figure}
+
+\subsection{Case D.2. \emph{BLACK} sibling with a left \emph{RED} child}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle, minimum size=14, inner sep=0, font=\small,thick,draw}]
+    \node (p) [label=left:h] at (0.00, 0.00) {p};
+    \node (v) [label=left:h+2]at (-1.50, -1.50) {v};
+    \node (s) [label=right:h+1]at (2.50, -1.50) {s};
+    \node (s2) [label=right:h+1/h+2]at (3.50, -2.25) {s2};
+    \node (z) [label=left:h+1] at (1.00, -1.50) {z};
+    \node (z1) [label=left:h+2] at (0.25, -3.00) {z1};
+    \node (z2) [label=right:h+2] at (1.75, -3.00) {z2};
+\end{scope}
+\begin{scope}[>={Stealth[black,length=3mm]},
+              every node/.style={fill=white,circle},
+              red_edge/.style={draw=red,very thick},
+              brown_edge/.style={draw=brown,very thick},
+              black_edge/.style={draw=black,very thick},
+              double_black_edge/.style={draw=black,thick}]
+    \path [->] (p) edge [double distance=2pt, double_black_edge] (v);
+    \path [->] (p) edge [black_edge] (s);
+    \path [->] (s) edge [red_edge] (z);
+    \path [->] (s) edge [brown_edge] (s2);
+    \path [->] (z) edge [black_edge] (z1);
+    \path [->] (z) edge [black_edge] (z2);
+\end{scope}
+\end{tikzpicture}
+\caption{\emph{Case D.2}: \emph{BLACK} sibling with a left \emph{RED} child}
+\label{fig:deletion_case_2}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle, minimum size=14, inner sep=0, font=\small,thick,draw}]
+    \node (z) [label=left:h] at (0.00, 0.00) {z};
+    \node (p) [label=left:h+1]at (-2.00, -1.50) {p};
+    \node (s) [label=right:h+1] at (2.00, -1.50) {s};
+    \node (v) [label=left:h+2] at (-3.00, -3.00) {v};
+    \node (s2) [label=right:h+1/h+2] at (3.50, -2.25) {s2};
+    \node (z1) [label=right:h+2] at (-1.00, -3.00) {z1};
+    \node (z2) [label=right:h+2] at (1.00, -3.00) {z2};
+\end{scope}
+\begin{scope}[>={Stealth[black,length=3mm]},
+              every node/.style={fill=white,circle},
+              red_edge/.style={draw=red,very thick},
+              brown_edge/.style={draw=brown,very thick},
+              black_edge/.style={draw=black,very thick}]
+    \path [->] (z) edge [black_edge] (p);
+    \path [->] (p) edge [black_edge] (v);
+    \path [->] (p) edge [black_edge] (z1);
+    \path [->] (z) edge [black_edge] (s);
+    \path [->] (s) edge [brown_edge] (s2);
+    \path [->] (s) edge [black_edge] (z2);
+\end{scope}
+\end{tikzpicture}
+\caption{Fix of \emph{Case D.2}}
+\label{fig:deletion_fix_of_case_2}
+\end{figure}
+
+\subsection{Case D.3. \emph{BLACK} sibling with \emph{BLACK} children and \emph{RED} parent}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle, minimum size=14, inner sep=0, font=\small,thick,draw}]
+    \node (r) [label=right:h] at (1.50, 0.00) {};
+    \node (p) [label=left:h] at (0.00, 0.00) {p};
+    \node (v) [label=left:h+2]at (-1.50, -1.50) {v};
+    \node (s) [label=right:h+1] at (1.00, -1.50) {s};
+    \node (s1) [label=left:h+2] at (0.25, -3.00) {s1};
+    \node (s2) [label=right:h+2] at (1.75, -3.00) {s2};
+\end{scope}
+\begin{scope}[>={Stealth[black,length=3mm]},
+              every node/.style={fill=white,circle},
+              red_edge/.style={draw=red,very thick},
+              brown_edge/.style={draw=brown,very thick},
+              black_edge/.style={draw=black,very thick},
+              double_black_edge/.style={draw=black,thick}]
+    \path [->] (r) edge [red_edge] (p);
+    \path [->] (p) edge [double distance=2pt, double_black_edge] (v);
+    \path [->] (p) edge [black_edge] (s);
+    \path [->] (s) edge [black_edge] (s1);
+    \path [->] (s) edge [black_edge] (s2);
+\end{scope}
+\end{tikzpicture}
+\caption{\emph{Case D.3}: \emph{BLACK} sibling with \emph{BLACK} children and \emph{RED} parent}
+\label{fig:deletion_case_3}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle, minimum size=14, inner sep=0, font=\small,thick,draw}]
+    \node (r) [label=left:h] at (1.00, 1.50) {};
+    \node (p) [label=left:h+1] at (0.00, 0.00) {p};
+    \node (v) [label=left:h+2] at (-1.50, -1.50) {v};
+    \node (s) [label=right:h+1] at (2.00, 0.00) {s};
+    \node (s1) [label=left:h+2] at (0.75, -1.50) {s1};
+    \node (s2) [label=right:h+2] at (3.25, -1.50) {s2};
+\end{scope}
+\begin{scope}[>={Stealth[black,length=3mm]},
+              every node/.style={fill=white,circle},
+              red_edge/.style={draw=red,very thick},
+              brown_edge/.style={draw=brown,very thick},
+              black_edge/.style={draw=black,very thick},
+              double_black_edge/.style={draw=black,thick}]
+    \path [->] (r) edge [black_edge] (p);
+    \path [->] (p) edge [black_edge] (v);
+    \path [->] (p) edge [red_edge] (s);
+    \path [->] (s) edge [black_edge] (s1);
+    \path [->] (s) edge [black_edge] (s2);
+\end{scope}
+\end{tikzpicture}
+\caption{Fix of \emph{Case D.3}}
+\label{fig:deletion_fix_of_case_3}
+\end{figure}
+
+\subsection{Case D.4. \emph{BLACK} sibling with \emph{BLACK} children and \emph{BLACK} parent}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle, minimum size=14, inner sep=0, font=\small,thick,draw}]
+    \node (r) [label=left:h] at (1.00, 1.50) {};
+    \node (p) [label=left:h+1] at (0.00, 0.00) {p};
+    \node (v) [label=left:h+3]at (-1.50, -1.50) {v};
+    \node (s) [label=right:h+1] at (1.00, -1.50) {s};
+    \node (s1) [label=left:h+3] at (0.25, -3.00) {s1};
+    \node (s2) [label=right:h+3] at (1.75, -3.00) {s2};
+\end{scope}
+\begin{scope}[>={Stealth[black,length=3mm]},
+              every node/.style={fill=white,circle},
+              red_edge/.style={draw=red,very thick},
+              brown_edge/.style={draw=brown,very thick},
+              black_edge/.style={draw=black,very thick},
+              double_black_edge/.style={draw=black,thick}]
+    \path [->] (r) edge [black_edge] (p);
+    \path [->] (p) edge [double distance=2pt, double_black_edge] (v);
+    \path [->] (p) edge [black_edge] (s);
+    \path [->] (s) edge [black_edge] (s1);
+    \path [->] (s) edge [black_edge] (s2);
+\end{scope}
+\end{tikzpicture}
+\caption{\emph{Case D.4}: \emph{BLACK} sibling with \emph{BLACK} children and \emph{BLACK} parent}
+\label{fig:deletion_case_4}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle, minimum size=14, inner sep=0, font=\small,thick,draw}]
+    \node (r) [label=left:h] at (1.00, 1.50) {};
+    \node (p) [label=left:h+2] at (0.00, 0.00) {p};
+    \node (v) [label=left:h+3] at (-1.50, -1.50) {v};
+    \node (s) [label=right:h+2] at (2.00, 0.00) {s};
+    \node (s1) [label=left:h+3] at (0.75, -1.50) {s1};
+    \node (s2) [label=right:h+3] at (3.25, -1.50) {s2};
+\end{scope}
+\begin{scope}[>={Stealth[black,length=3mm]},
+              every node/.style={fill=white,circle},
+              red_edge/.style={draw=red,very thick},
+              brown_edge/.style={draw=brown,very thick},
+              black_edge/.style={draw=black,very thick},
+              double_black_edge/.style={draw=black,thick}]
+    \path [->] (r) edge [double distance=2pt, double_black_edge] (p);
+    \path [->] (p) edge [black_edge] (v);
+    \path [->] (p) edge [red_edge] (s);
+    \path [->] (s) edge [black_edge] (s1);
+    \path [->] (s) edge [black_edge] (s2);
+\end{scope}
+\end{tikzpicture}
+\caption{Fix of \emph{Case D.4}}
+\label{fig:deletion_fix_of_case_4}
+\end{figure}
+
+\subsection{Case D.5. \emph{RED} sibling}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle, minimum size=14, inner sep=0, font=\small,thick,draw}]
+    \node (p) [label=left:h] at (0.00, 0.00) {p};
+    \node (v) [label=left:h+2]at (-1.50, -1.50) {v};
+    \node (s) [label=right:h] at (2.00, -0.00) {s};
+    \node (s1) [label=left:h+1] at (0.75, -1.50) {s1};
+    \node (s2) [label=right:h+1] at (3.25, -1.50) {s2};
+\end{scope}
+\begin{scope}[>={Stealth[black,length=3mm]},
+              every node/.style={fill=white,circle},
+              red_edge/.style={draw=red,very thick},
+              brown_edge/.style={draw=brown,very thick},
+              black_edge/.style={draw=black,very thick},
+              double_black_edge/.style={draw=black,thick}]
+    \path [->] (r) edge [] (p);
+    \path [->] (p) edge [double distance=2pt, double_black_edge] (v);
+    \path [->] (p) edge [red_edge] (s);
+    \path [->] (s) edge [black_edge] (s1);
+    \path [->] (s) edge [black_edge] (s2);
+\end{scope}
+\end{tikzpicture}
+\caption{\emph{Case D.5}: \emph{BLACK} sibling with \emph{BLACK} children and \emph{BLACK} parent}
+\label{fig:deletion_case_5}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+\begin{scope}[every node/.style={circle, minimum size=14, inner sep=0, font=\small,thick,draw}]
+    \node (p) [label=left:h] at (0.00, 0.00) {p};
+    \node (v) [label=left:h+2] at (-1.00, -1.50) {v};
+    \node (s) [label=right:h] at (2.25, 0.00) {s};
+    \node (s1) [label=right:h+1] at (1.00, -1.50) {s1};
+    \node (s2) [label=right:h+1] at (3.50, -1.50) {s2};
+\end{scope}
+\begin{scope}[>={Stealth[black,length=3mm]},
+              every node/.style={fill=white,circle},
+              red_edge/.style={draw=red,very thick},
+              brown_edge/.style={draw=brown,very thick},
+              black_edge/.style={draw=black,very thick},
+              double_black_edge/.style={draw=black,thick}]
+    \path [->] (r) edge [] (s);
+    \path [->] (s) edge [red_edge] (p);
+    \path [->] (p) edge [double distance=2pt, double_black_edge] (v);
+    \path [->] (p) edge [black_edge] (s1);
+    \path [->] (s) edge [black_edge] (s2);
+\end{scope}
+\end{tikzpicture}
+\caption{Handling of \emph{Case D.5}}
+\label{fig:deletion_fix_of_case_5}
+\end{figure}
 
 \section{Implementation}
 
