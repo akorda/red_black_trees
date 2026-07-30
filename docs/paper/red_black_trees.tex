@@ -634,8 +634,8 @@ See the Figure~\ref{fig:deletion_case_1_problem}, or maybe Figure~\ref{fig:delet
 \begin{scope}[every node/.style={circle, minimum size=14, inner sep=0, font=\small,thick,draw}]
     \node (r) [label=left:h] at (1.00, 1.50) {};
     \node (p) [label=left:h+1] at (0.00, 0.00) {p};
-    \node (v) [label=left:h+3]at (-1.50, -1.50) {v};
-    \node (s) [label=right:h+1] at (1.00, -1.50) {s};
+    \node (v) [label=left:h+3] at (-1.50, -1.50) {v};
+    \node (s) [label=right:h+2] at (1.00, -1.50) {s};
     \node (s1) [label=left:h+3] at (0.25, -3.00) {s1};
     \node (s2) [label=right:h+3] at (1.75, -3.00) {s2};
 \end{scope}
@@ -717,23 +717,21 @@ See the Figure~\ref{fig:deletion_case_1_problem}, or maybe Figure~\ref{fig:delet
 \begin{subfigure}[b]{0.5\textwidth}
 \begin{tikzpicture}
 \begin{scope}[every node/.style={circle, minimum size=14, inner sep=0, font=\small,thick,draw}]
-    \node (p) [label=left:h] at (0.00, 0.00) {p};
-    \node (v) [label=left:h+2] at (-1.00, -1.50) {v};
-    \node (s) [label=right:h] at (2.25, 0.00) {s};
-    \node (s1) [label=right:h+1] at (1.00, -1.50) {s1};
-    \node (s2) [label=right:h+1] at (3.50, -1.50) {s2};
+    \node (s) [label=left:h] at (0.00, 0.00) {s};
+    \node (p) [label=left:h+1] at (-1.50, -1.50) {p};
+    \node (v) [label=left:h+2] at (-3.00, -3.00) {v};
+    \node (s1) [label=right:h+1] at (-0.00, -1.50) {s1};
+    \node (s2) [label=right:h+1] at (1.50, -1.50) {s2};
 \end{scope}
 \begin{scope}[>={Stealth[black,length=3mm]},
               every node/.style={fill=white,circle},
               red_edge/.style={draw=red,very thick},
-              red_black_edge/.style={draw=green,very thick},
-              black_edge/.style={draw=black,very thick},
-              double_black_edge/.style={draw=black,thick}]
+              black_edge/.style={draw=black,very thick}]
     \path [->] (r) edge [] (s);
-    \path [->] (s) edge [red_edge] (p);
-    \path [->] (p) edge [double distance=2pt, double_black_edge] (v);
-    \path [->] (p) edge [black_edge] (s1);
-    \path [->] (s) edge [black_edge] (s2);
+    \path [->] (s) edge [black_edge] (p);
+    \path [->] (s) edge [black_edge] (s2);    
+    \path [->] (p) edge [red_edge] (s1);
+    \path [->] (p) edge [black_edge] (v);
 \end{scope}
 \end{tikzpicture}
 \caption{Handling of \emph{Case D.5}}
