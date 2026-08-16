@@ -8,13 +8,14 @@ public static class Program
     {
         var tree = new RedBlackTree<int, string>();
 
-        var keys = new int[] { 11, 2, 14, 1, 7, 15, 5, 8, 4 };
+        // var keys = new int[] { 11, 2, 14, 1, 7, 15, 5, 8, 4 };
         // var keys = new int[] { 14, 11, 2, 3 };
         // keys for paper "A dichromatic framework for balanced trees"
-        // var keys = new int[] { 1, 9, 2, 8, 3, 7, 4, 6, 5 };
+        //var keys = new int[] { 1, 9, 2, 8, 3, 7, 4, 6, 5 };
         // var random = Random.Shared;
         // var keys = new List<int>();
         // Enumerable.Range(0, 1000).ToList().ForEach(i => keys.Add(random.Next(1000)));
+        var keys = Enumerable.Range(0, 10000).ToList().Shuffle().ToArray();
 
         var writer = new ConsoleTreeWriter<int, string>();
         foreach (var key in keys)
@@ -25,12 +26,26 @@ public static class Program
         }
 
 
-        // writer.Write(tree, Console.Out);
+        writer.Write(tree, Console.Out);
         // new LatexTreeWriter<int, string>().Write(tree, Console.Out);
         // new LatexSameLevelTreeWriter<int, string>().Write(tree, Console.Out);
 
-        tree.Postorder(n => Console.WriteLine($"{n.Color}: {n.Key} -> {n.Value}"));
-        var min = tree.GetMinimum();
-        var max = tree.GetMaximum();
+        // tree.Postorder(n => Console.WriteLine($"{n.Color}: {n.Key} -> {n.Value}"));
+        // var min = tree.GetMinimum();
+        // var max = tree.GetMaximum();
+
+        using (var stream = File.CreateText("tree.txt"))
+        {
+            var textWriter = new StreamWriter(stream.BaseStream);
+            tree.Save(textWriter);
+            textWriter.Flush();
+        }
+
+        using (var stream = File.CreateText("tree2.txt"))
+        {
+            var textWriter = new StreamWriter(stream.BaseStream);
+            tree.SaveNullValues(textWriter);
+            textWriter.Flush();
+        }
     }
 }

@@ -390,4 +390,75 @@ public class RedBlackTree<K, V>
 
         return (node.Key, node.Value!);
     }
+
+    /// <summary>
+    /// - Save all nodes in level order (key, value) till a nil node is hit
+    /// - In this level, foreach non-nil node
+    ///     - save the location of the node (see Tanenbaum paper)
+    ///     - recursively save the node
+    /// </summary>
+    public void Save(TextWriter writer)
+    {
+        ArgumentNullException.ThrowIfNull(writer);
+
+        var start = new NodeAddress(Root, "");
+        Save(writer, start, "");
+    }
+
+    private void Save(TextWriter writer, NodeAddress start, string indent)
+    {
+        var queue = new Queue<NodeAddress>();
+        queue.Enqueue(start);
+
+        var nilFound = false;
+        while (queue.Count > 0)
+        {
+            var node = queue.Dequeue();
+
+            if (node.Node == Nil)
+            {
+                nilFound = true;
+                continue;
+            }
+
+            if (nilFound)
+            {
+                writer.WriteLine($"{indent}#{node.Address}");
+                // replace address with local address
+                node = new NodeAddress(node.Node, "");
+                Save(writer, node, indent + "    ");
+                nilFound = false;
+            }
+            else
+            {
+                writer.WriteLine($"{indent}{node.Node.Color.ToString()[0]}{node.Node.Key}");
+
+                queue.Enqueue(new NodeAddress(node.Node.Left, node.Address + "0"));
+                queue.Enqueue(new NodeAddress(node.Node.Right, node.Address + "1"));
+            }
+        }
+        // writer.WriteLine($"{indent}!");
+    }
+
+    private record NodeAddress(Node<K, V> Node, string Address);
+
+    public void SaveNullValues(TextWriter writer)
+    {
+        ArgumentNullException.ThrowIfNull(writer);
+
+        SaveNullValues(writer, Root);
+    }
+
+    private void SaveNullValues(TextWriter writer, Node<K, V> node)
+    {
+        if (IsNil(node))
+        {
+            writer.WriteLine("!");
+            return;
+        }
+
+        writer.WriteLine($"{node.Color.ToString()[0]}{node.Key}");
+        SaveNullValues(writer, node.Left);
+        SaveNullValues(writer, node.Right);
+    }
 }

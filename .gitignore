@@ -20,3 +20,6 @@ docs/paper/*.bbl
 docs/paper/*.bcf
 docs/paper/*.blg
 docs/paper/*.run.xml
+
+src/RedBlackTrees/tree.txt
+src/RedBlackTrees/tree2.txt
